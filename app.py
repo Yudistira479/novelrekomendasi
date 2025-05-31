@@ -10,7 +10,7 @@ def load_data():
     df = pd.read_csv("novels1.csv")
     return df
 
-novels = load_data()
+novels1 = load_data()
 
 # Label Encoding
 le_genre = LabelEncoder()
