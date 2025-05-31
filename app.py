@@ -18,20 +18,20 @@ le_title = LabelEncoder()
 le_author = LabelEncoder()
 le_status = LabelEncoder()
 
-novels['genre_encoded'] = le_genre.fit_transform(novels['genres'])
-novels['title_encoded'] = le_title.fit_transform(novels['title'])
-novels['author_encoded'] = le_author.fit_transform(novels['authors'])
-novels['status_encoded'] = le_status.fit_transform(novels['status'])
+novels1['genre_encoded'] = le_genre.fit_transform(novels['genres'])
+novels1['title_encoded'] = le_title.fit_transform(novels['title'])
+novels1['author_encoded'] = le_author.fit_transform(novels['authors'])
+novels1['status_encoded'] = le_status.fit_transform(novels['status'])
 
 # Model untuk prediksi berdasarkan rating
-X_rating = novels[['genre_encoded', 'author_encoded', 'status_encoded']]
-y_rating = novels['scored']
+X_rating = novels1[['genre_encoded', 'author_encoded', 'status_encoded']]
+y_rating = novels1['scored']
 model_rating = RandomForestClassifier(n_estimators=100, random_state=42)
 model_rating.fit(X_rating, y_rating)
 
 # Model untuk prediksi berdasarkan genre
-X_genre = novels[['scored', 'author_encoded', 'status_encoded']]
-y_genre = novels['genre_encoded']
+X_genre = novels1[['scored', 'author_encoded', 'status_encoded']]
+y_genre = novels1['genre_encoded']
 model_genre = RandomForestClassifier(n_estimators=100, random_state=42)
 model_genre.fit(X_genre, y_genre)
 
@@ -48,7 +48,7 @@ if page == "Home":
     st.title("📚 Beranda")
 
     st.subheader("10 Novel Paling Populer")
-    top_popular = novels.sort_values(by="popularty", ascending=False).head(10)
+    top_popular = novels1.sort_values(by="popularty", ascending=False).head(10)
     st.dataframe(top_popular[['novel_id', 'title', 'authors', 'genres', 'scored', 'popularty']])
 
     st.subheader("Riwayat Rekomendasi")
@@ -62,9 +62,9 @@ if page == "Home":
 # PAGE 2 - RATING
 elif page == "Rekomendasi Berdasarkan Rating":
     st.title("⭐ Rekomendasi Berdasarkan Rating")
-    selected_title = st.selectbox("Pilih judul novel", novels['title'].unique())
+    selected_title = st.selectbox("Pilih judul novel", novels1['title'].unique())
 
-    selected_row = novels[novels['title'] == selected_title].iloc[0]
+    selected_row = novels1[novels1['title'] == selected_title].iloc[0]
     X_input = pd.DataFrame({
         'genre_encoded': [selected_row['genre_encoded']],
         'author_encoded': [selected_row['author_encoded']],
@@ -72,7 +72,7 @@ elif page == "Rekomendasi Berdasarkan Rating":
     })
 
     y_pred = model_rating.predict(X_input)[0]
-    result = novels[novels['scored'] == y_pred].sort_values(by='popularty', ascending=False).head(10)
+    result = novels1[novels1['scored'] == y_pred].sort_values(by='popularty', ascending=False).head(10)
 
     st.write(f"Rekomendasi novel berdasarkan rating dari \"{selected_title}\":")
     st.dataframe(result[['novel_id', 'title', 'authors', 'genres', 'scored', 'popularty']])
