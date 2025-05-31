@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 # Load dataset
 @st.cache_data
 def load_data():
-    df = pd.read_csv("novels1.csv")
+    df = pd.read_csv("novels.csv")
     return df
 
 novels = load_data()
